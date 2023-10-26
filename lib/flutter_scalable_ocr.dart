@@ -239,23 +239,19 @@ class ScalableOCRState extends State<ScalableOCR> {
 
     final planeData = image.planes.map(
       (Plane plane) {
-        return InputImagePlaneMetadata(
-          bytesPerRow: plane.bytesPerRow,
-          height: plane.height,
-          width: plane.width,
-        );
+        return plane;
       },
     ).toList();
 
-    final inputImageData = InputImageData(
+    final inputImageData = InputImageMetadata(
       size: imageSize,
-      imageRotation: imageRotation,
-      inputImageFormat: inputImageFormat,
-      planeData: planeData,
+      rotation: imageRotation,
+      format: inputImageFormat,
+      bytesPerRow: planeData.length,
     );
 
     final inputImage =
-        InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
+        InputImage.fromBytes(bytes: bytes, metadata: inputImageData);
 
     processImage(inputImage);
   }
@@ -308,16 +304,16 @@ class ScalableOCRState extends State<ScalableOCR> {
     _isBusy = true;
 
     final recognizedText = await _textRecognizer.processImage(inputImage);
-    if (inputImage.inputImageData?.size != null &&
-        inputImage.inputImageData?.imageRotation != null &&
+    if (inputImage.metadata?.size != null &&
+        inputImage.metadata?.rotation != null &&
         cameraPrev.currentContext != null) {
       final RenderBox renderBox =
           cameraPrev.currentContext?.findRenderObject() as RenderBox;
 
       var painter = TextRecognizerPainter(
           recognizedText,
-          inputImage.inputImageData!.size,
-          inputImage.inputImageData!.imageRotation,
+          inputImage.metadata!.size,
+          inputImage.metadata!.rotation,
           renderBox, (value) {
         widget.getScannedText(value);
       }, getRawData: (value) {
