@@ -87,7 +87,7 @@ class ScalableOCRState extends State<ScalableOCR> {
   Widget build(BuildContext context) {
     double sizeH = MediaQuery.of(context).size.height / 100;
     return Padding(
-        padding: EdgeInsets.all(sizeH * 3),
+        padding: EdgeInsets.all(0),
         child: SingleChildScrollView(
           child: Column(
             children: [
